@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Data Cafe</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+
+    <style>
+        body {
+            background-color: #f7f9fc;
+            background-image: url('gambar_cafes.jpg'); /* Background image */
+            background-size: cover; /* Cover the whole area */
+            background-position: center; /* Center the image */
+            min-height: 100vh; /* Minimum height for full view */
+        }
+        .container {
+            margin-top: 40px;
+            max-width: 1100px;
+            background: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+            border-radius: 12px; /* Rounded corners */
+            padding: 20px; /* Padding for space inside container */
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Shadow on container */
+        }
+        .card {
+            border-radius: 12px; /* Rounded corners for the card */
+        }
+        .card-header {
+            background-color: #5a6268; /* Dark background for header */
+            color: white; /* White text color */
+            font-weight: bold; /* Bold text */
+            font-size: 1.2rem; /* Header font size */
+            padding: 1rem 1.5rem; /* Padding in header */
+            text-align: center; /* Center the text */
+        }
+        .form-group label {
+            font-weight: 600; /* Bold label */
+            color: #333; /* Dark color for label */
+        }
+        #map {
+            height: 500px; /* Height of the map */
+            border-radius: 8px; /* Rounded corners for the map */
+        }
+        .btn-primary {
+            background-color: #5a6268; /* Button color */
+            border-color: #5a6268; /* Border color */
+            border-radius: 8px; /* Rounded corners for button */
+            padding: 10px 20px; /* Padding for button */
+        }
+        .btn-primary:hover {
+            background-color: #4e555b; /* Darker color on hover */
+            border-color: #4e555b; /* Darker border on hover */
+        }
+        .instructions {
+            color: #6c757d; /* Color for instructions */
+            font-size: 0.9rem; /* Font size for instructions */
+            margin-top: 10px; /* Margin on top */
+        }
+        .btn-danger {
+            padding: 5px 10px; /* Smaller padding for the button */
+            font-size: 0.85rem; /* Smaller font size */
+            border-radius: 8px; /* Consistent border radius */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            TAMBAH DATA CAFE
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- Form Section -->
+                <div class="col-md-4">
+                    <form action="create.php" method="post"> <!-- Change action to the process file for creating -->
+                        <div class="form-group">
+                            <label for="inputName">Nama Cafe</label>
+                            <input type="text" class="form-control" name="inputName" id="inputName" placeholder="Masukkan nama cafe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputAddress">Alamat Cafe</label>
+                            <textarea class="form-control" name="inputAddress" id="inputAddress" rows="2" placeholder="Masukkan alamat cafe" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="no_hp">No Hp</label>
+                            <input type="number" class="form-control" name="no_hp" id="no_hp" rows="2" placeholder="no hp" required></input>
+                        </div>
+
+                        <select name="kategori">
+                            <option value="indoor">indoor</option>
+                            <option value="outdoor">outdoor</option>
+                            <option value="dll">dll</option>
+                          </select>
+
+                        <div class="form-group">
+                            <label for="inputLatitude">Latitude</label>
+                            <input type="text" class="form-control" name="inputLatitude" id="inputLatitude" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputLongitude">Longitude</label>
+                            <input type="text" class="form-control" name="inputLongitude" id="inputLongitude" readonly>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block mt-3">Simpan Data Cafe</button>
+                    </form>
+                    <p class="instructions">* Klik lokasi pada peta untuk mengisi latitude dan longitude.</p>
+                    
+                    <!-- Button to return to Dashboard -->
+                    <a href="dashboard.php" class="btn btn-danger btn-block mt-3">Close</a>
+                </div>
+
+                <!-- Map Section -->
+                <div class="col-md-8">
+                    <div id="map"></div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+<script>
+    // Inisialisasi peta
+    var map = L.map('map').setView([0.01645239124004665, 110.88843126442208], 13);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 17 }).addTo(map);
+
+    var lat = document.getElementById('inputLatitude');
+    var lng = document.getElementById('inputLongitude');
+    var marker;
+
+    // Menangkap klik pada peta
+    map.on('click', function(e) {
+        if(marker) { map.removeLayer(marker); }
+        marker = L.marker(e.latlng).addTo(map);
+        
+        var latFromMap = e.latlng.lat;
+        var lngFromMap = e.latlng.lng;
+        lat.value = latFromMap;
+        lng.value = lngFromMap;
+    });
+</script>
+
+<!-- Bootstrap JS and dependencies (Optional) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
